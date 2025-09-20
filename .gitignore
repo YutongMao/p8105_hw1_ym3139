@@ -7,5 +7,4 @@
 .vscode
 *.utf8.md
 *_cache/
-*_files/
 figure/
