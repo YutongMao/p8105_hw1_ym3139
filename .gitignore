@@ -1,0 +1,11 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+.DS_Store
+.Renviron
+.vscode
+*.utf8.md
+*_cache/
+*_files/
+figure/
