@@ -46,3 +46,62 @@ ggplot2::ggsave(
 )
 ```
 
+
+# Problem 2
+```{r p2-data, message=FALSE, warning=FALSE}
+library(tidyverse)
+set.seed(8105)
+
+df_p2 <- tibble(
+  norm_samp   = rnorm(10),                     # numeric
+  is_positive = norm_samp > 0,                 # logical
+  char_vec    = paste0("id_", 1:10),           # character
+  factor_vec  = factor(                        # factor (3 levels)
+    rep(c("low","med","high"), length.out = 10),
+    levels = c("low","med","high")
+  )
+)
+
+df_p2
+
+```
+
+```{r}
+mean_num   <- df_p2 %>% pull(norm_samp)   %>% mean()
+mean_logi  <- df_p2 %>% pull(is_positive) %>% mean()
+
+tibble(
+  variable = c("norm_samp (numeric)", "is_positive (logical)"),
+  mean     = c(mean_num,               mean_logi)
+)
+
+```
+
+```{r}
+# These fail because the columns are not numeric/logical:
+df_p2 %>% pull(char_vec)   %>% mean()
+df_p2 %>% pull(factor_vec) %>% mean()
+```
+
+
+```{r}
+# Coercion demos (code only; output hidden)
+as.numeric(df_p2$is_positive)     
+as.numeric(df_p2$char_vec) 
+as.numeric(df_p2$factor_vec) 
+
+```
+
+For numeric columns, the `mean()` function operates as expected.  
+
+For logical columns, `mean()` is also valid because `TRUE` is coerced to 1 and `FALSE` is coerced to 0, so the mean equals the proportion of `TRUE` values.  
+
+For character and factor columns, `mean()` cannot be applied because they are neither numeric nor logical.  
+
+Use `as.numeric()` to convert:
+- Logical → 0/1 (thus `mean()` calculates as a proportion),
+- Character → `NA` (non-numeric strings cannot be coerced),
+- Factor → the internal integer encoding of the levels (1, 2, 3), **not** the label values.  
+
+This explains why logical can compute the mean while character/factor cannot.
+
